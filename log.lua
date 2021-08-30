@@ -18,7 +18,7 @@ local HoneyPerSec = game.Players.LocalPlayer.PlayerGui.ScreenGui.MeterHUD.HoneyM
 local Pollen = game.Players.LocalPlayer.PlayerGui.ScreenGui.MeterHUD.PollenMeter.Bar:WaitForChild("TextLabel")
 local PollenPerSec = game.Players.LocalPlayer.PlayerGui.ScreenGui.MeterHUD.PollenMeter.Bar:WaitForChild("PerSecLabel")
 local Old_Time = tostring(os.date("%m/%d %X"))
-local Old_Time2 = tostring(os.date("%m/%d/%Y %X"))
+local Old_Time2 = os.time()
 local Old_Honey = Honey.Text
 local Old_Honey2 = game.Players.LocalPlayer.CoreStats.Honey.Value
 local New_Honey, New_Honey2, HoneySum, New_Time, Timer
@@ -62,7 +62,7 @@ end
 
 function logLeave(Webhook, Time, Player, Message)
 	local embed2 = {
-		['description'] = "**This is the End of Bee Swarm Simulator log**\n\n**"..Time.." "..Player.."**:\n\n "..Message
+		['description'] = "**This is the End of Bee Swarm Simulator log**\n\n**"..Time.." ||"..Player.."||**:\n\n "..Message
 	}
 	if discordid == "" then
 		local a2 = syn.request({
@@ -92,28 +92,6 @@ local func1 = coroutine.wrap(function()
     end
 end)
 func1()
-function caltime(old,new)
-    local Old_T1 = string.split(old, " ")
-    local Old_T2 = string.split(Old_T1[2], ":")
-    local Old_T3 = string.split(Old_T1[1], "/")
-    local Old_Month = tonumber(Old_T3[1]) --2592000
-    local Old_Day = tonumber(Old_T3[2]) --86400
-    local Old_Year = tonumber(Old_T3[3]) --946080000
-    local Old_Sec = tonumber(Old_T2[3]) --1
-    local Old_Min = tonumber(Old_T2[2]) --60
-    local Old_Hour = tonumber(Old_T2[1]) --3600
-    local New_T1 = string.split(new, " ")
-    local New_T2 = string.split(New_T1[2], ":")
-    local New_T3 = string.split(New_T1[1], "/")
-    local New_Month = tonumber(New_T3[1]) --2592000
-    local New_Day = tonumber(New_T3[2]) --86400
-    local New_Year = tonumber(New_T3[3]) --946080000
-    local New_Sec = tonumber(New_T2[3]) --1
-    local New_Min = tonumber(New_T2[2]) --60
-    local New_Hour = tonumber(New_T2[1]) --3600
-    local T = ((New_Year-Old_Year)*946080000+(New_Month-Old_Month)*2592000+(New_Day-Old_Day)*86400+(New_Hour-Old_Hour)*3600+(New_Min-Old_Min)*60+(New_Sec-Old_Sec))
-    return T
-end
 
 function Integer_N_Comma(value)
     if tostring(value):find(".") then
@@ -128,7 +106,7 @@ end
 
 game.Players.PlayerRemoving:Connect(function(player)
 	if player.Name == game.Players.LocalPlayer.Name then
-		local timer = caltime(Old_Time2,tostring(os.date("%m/%d/%Y %X")))
+		local timer = (tonumber(Old_Time2)-os.time())
 		local msg1 = ("  **"..Old_Honey.." || "..Old_Time.."**\n\n  **"..Honey.Text.." || "..tostring(os.date("%m/%d %X")).."**\n\n  **"..comma_value(game.Players.LocalPlayer.CoreStats.Honey.Value-Old_Honey2).." || "..tostring(math.floor(timer/86400))..":"..tostring(math.floor(timer/3600)%24)..":"..tostring(math.floor(timer/60)%60)..":"..tostring(math.floor(timer%60)).."("..timer.."s)**\n\n    **"..(game.Players.LocalPlayer.CoreStats.Honey.Value-Old_Honey2)/timer.."/s**\n   **("..Integer_N_Comma((game.Players.LocalPlayer.CoreStats.Honey.Value-Old_Honey2)/timer)..")**")
 		logLeave(webhook, GetTime(), player.Name, msg1)
 	end
