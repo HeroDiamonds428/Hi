@@ -106,7 +106,7 @@ end
 
 game.Players.PlayerRemoving:Connect(function(player)
 	if player.Name == game.Players.LocalPlayer.Name then
-		local timer = (tonumber(Old_Time2)-os.time())
+		local timer = (os.time()-tonumber(Old_Time2))
 		local msg1 = ("  **"..Old_Honey.." || "..Old_Time.."**\n\n  **"..Honey.Text.." || "..tostring(os.date("%m/%d %X")).."**\n\n  **"..comma_value(game.Players.LocalPlayer.CoreStats.Honey.Value-Old_Honey2).." || "..tostring(math.floor(timer/86400))..":"..tostring(math.floor(timer/3600)%24)..":"..tostring(math.floor(timer/60)%60)..":"..tostring(math.floor(timer%60)).."("..timer.."s)**\n\n    **"..(game.Players.LocalPlayer.CoreStats.Honey.Value-Old_Honey2)/timer.."/s**\n   **("..Integer_N_Comma((game.Players.LocalPlayer.CoreStats.Honey.Value-Old_Honey2)/timer)..")**")
 		logLeave(webhook, GetTime(), player.Name, msg1)
 	end
