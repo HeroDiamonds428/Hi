@@ -1,8 +1,8 @@
 --original webhook by https://v3rmillion.net/member.php?action=profile&uid=923737
 --original script thread : https://v3rmillion.net/showthread.php?tid=1101168
 This_Script_ONLY_Works_On_SynapseX = true -- This Script ONLY Works On SynapseX
-HoneyInfo = false  -- || true || false || Send a information of your honey and pollen amount every x seconds
-cd = 5  --|| number bigger then 0 || Cooldown of HoneyInfo
+HoneyInfo = true  -- || true || false || Send a information of your honey and pollen amount every x seconds
+cd = 60  --|| number bigger then 0 || Cooldown of HoneyInfo
 discordid = ""  --|| Your discord id || (Leave it empty("") if u don't want a ping when u leave the game)
 local webhook = ""  -- || Your discord webhook link ||
 username = "Bee Swarm Simulator Log"  -- || Webhook Name ||
@@ -24,8 +24,8 @@ local Old_Honey2 = game.Players.LocalPlayer.CoreStats.Honey.Value
 local New_Honey, New_Honey2, HoneySum, New_Time, Timer
 
 function GetTime()
-	local re = tostring(os.date("%m/%d/%Y %X"))
-	return re
+	local t = tostring(os.date("%m/%d/%Y %X"))
+	return t
 end
 
 function comma_value(amount)
@@ -50,7 +50,7 @@ local a = syn.request({
 
 function logHoney(Webhook, Time, Player, Message)
 	local embed = {
-		['description'] = "**"..Time.." "..Player..":\n "..Message.."**"
+		['description'] = "**Honey Log Sends Every "..cd.." Seconds\n"..Time.." "..Player..":\n "..Message.."**"
 	}
 	local a = syn.request({
 		Url = Webhook,
@@ -82,13 +82,21 @@ function logLeave(Webhook, Time, Player, Message)
 end
 if cd <= 0 then
     cd = 5
-    print("CoolDown Mush Bigger then 0 (Set cd to 5)")
+    print("CoolDown Must Bigger then 0 (Set cd to 5)")
+end
+function RemoveComma(v)
+    if tostring(v):find(",") then
+       local v2 = string.gsub(tostring(v), ",", "")
+       return tonumber(v2)
+    end
 end
 local func1 = coroutine.wrap(function()
     while HoneyInfo do
-	    local honeymsg = ("Honey: "..Honey.Text.." | "..HoneyPerSec.Text.."\nPollen: "..Pollen.Text.." | "..PollenPerSec.Text)
+        local old = RemoveComma(Honey.Text)
+        wait(cd)
+        local new = RemoveComma(Honey.Text)
+	    local honeymsg = ("Honey: "..Honey.Text.." | "..Integer_N_Comma((new-old)/cd).."/s | ("..Integer_N_Comma(new-old).."/"..cd.."s)\nPollen: "..Pollen.Text)
 	    logHoney(webhook, GetTime(), game.Players.LocalPlayer.Name, honeymsg)
-	    wait(cd)
     end
 end)
 func1()
