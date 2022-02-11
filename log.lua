@@ -3,7 +3,7 @@
 HoneyInfo = true  -- || true || false || Send a information of your honey and pollen amount every x seconds
 _G.cd = 60  --|| number bigger then 0 || Cooldown of HoneyInfo
 discordid = ""  --|| Your discord id || (Leave it empty("") if u don't want a ping when u leave the game)
-webhook = "https://discord.com/api/webhooks/874726048841998347/n56DY0RtQvoAOM3OACfNxSZlcOksY1Vkv2K1tS9z7Pj3Fiv2qjBO6KmNgt7tQ-4V0F3w"  -- || Your discord webhook link ||
+webhook = ""  -- || Your discord webhook link ||
 username = "Bee Swarm Simulator Log"  -- || Webhook Name ||
 avatar_url = "https://t2.rbxcdn.com/5a7af67e8aff4511fa2d2e8b1914a2e2"  -- || Webhook Avatar Url ||
 
