@@ -5,7 +5,7 @@ _G.cd = 60  --|| number bigger then 0 || Cooldown of HoneyInfo
 discordid = ""  --|| Your discord id || (Leave it empty("") if u don't want a ping when u leave the game)
 webhook = ""  -- || Your discord webhook link ||
 username = "Bee Swarm Simulator Log"  -- || Webhook Name ||
-avatar_url = "https://t2.rbxcdn.com/5a7af67e8aff4511fa2d2e8b1914a2e2"  -- || Webhook Avatar Url ||
+avatar_url = "https://tr.rbxcdn.com/e2b0e107193c917e2de281bbcb951487/150/150/Image/Jpeg"  -- || Webhook Avatar Url || --old link https://t2.rbxcdn.com/5a7af67e8aff4511fa2d2e8b1914a2e2
 
 if game.PlaceId ~= 1537690962 then return end
 
@@ -55,30 +55,45 @@ function SendRequest(v,msg)
         local embed = {
         	['title'] = msg
         }
-    elseif v=="description" then
+        if discordid == "" then
+        	local a2 = syn.request({
+        		Url = webhook,
+        		Headers = {['Content-Type'] = 'application/json'},
+        		Body = game:GetService("HttpService"):JSONEncode({['username'] = username, ['avatar_url'] = avatar_url, ['embeds'] = {embed}, ['content'] = ""}),
+        		Method = "POST"
+        	})
+    	else
+        	local a2 = syn.request({
+        		Url = webhook,
+        		Headers = {['Content-Type'] = 'application/json'},
+        		Body = game:GetService("HttpService"):JSONEncode({['username'] = username, ['avatar_url'] = avatar_url, ['embeds'] = {embed}, ['content'] = '<@'..discordid..'>'}),
+        		Method = "POST"
+        	})
+        end
+    else
     	local embed = {
     		['description'] = msg
     	}
+        if discordid == "" then
+        	local a2 = syn.request({
+        		Url = webhook,
+        		Headers = {['Content-Type'] = 'application/json'},
+        		Body = game:GetService("HttpService"):JSONEncode({['username'] = username, ['avatar_url'] = avatar_url, ['embeds'] = {embed}, ['content'] = ""}),
+        		Method = "POST"
+        	})
+    	else
+        	local a2 = syn.request({
+        		Url = webhook,
+        		Headers = {['Content-Type'] = 'application/json'},
+        		Body = game:GetService("HttpService"):JSONEncode({['username'] = username, ['avatar_url'] = avatar_url, ['embeds'] = {embed}, ['content'] = '<@'..discordid..'>'}),
+        		Method = "POST"
+        	})
+        end
     end
-    if discordid == "" then
-    	local rq = syn.request({
-    		Url = Webhook,
-    		Headers = {['Content-Type'] = 'application/json'},
-    		Body = game:GetService("HttpService"):JSONEncode({['username'] = username, ['avatar_url'] = avatar_url, ['content'] = '<@'..discordid..'>', ['embeds'] = {embed}}),
-    		Method = "POST"
-    	})
-	else
-    	local rq = syn.request({
-    		Url = Webhook,
-    		Headers = {['Content-Type'] = 'application/json'},
-    		Body = game:GetService("HttpService"):JSONEncode({['username'] = username, ['avatar_url'] = avatar_url, ['content'] = '', ['embeds'] = {embed}}),
-    		Method = "POST"
-    	})
-	end
+    return
 end
 
-SendRequest("title",'Bee Swarm Simulator\nStarted Tracking Player Honey Amount at\n'..tostring(os.date("%m/%d/%Y %X")))
-
+SendRequest("title",('Bee Swarm Simulator\nStarted Tracking Player Honey Amount at\n'..tostring(os.date("%m/%d/%Y %X"))))
 if _G.cd <= 0 then
     _G.cd = 60
     print("CoolDown Must Bigger then 0 (Set cd to 60)")
@@ -94,7 +109,7 @@ local LogHoney = coroutine.wrap(function()
         local old = RemoveComma(Honey.Text)
         wait(_G.cd)
         local new = RemoveComma(Honey.Text)
-        SendRequest("description","**Honey Log Sends Every ".._G.cd.." Seconds\n"..GetTime().." ||"..lpname.."||:\n "..("Honey: "..Honey.Text.." | "..Integer_N_Comma((new-old)/_G.cd).."/s | ("..Integer_N_Comma(new-old).."/".._G.cd.."s)\nPollen: "..Pollen.Text).."**")
+        SendRequest("description",("**Honey Log Sends Every ".._G.cd.." Seconds\n"..GetTime().." ||"..lpname.."||:\n "..("Honey: "..Honey.Text.." | "..Integer_N_Comma((new-old)/_G.cd).."/s | ("..Integer_N_Comma(new-old).."/".._G.cd.."s)\nPollen: "..Pollen.Text).."**"))
     end
 end)
 
@@ -103,7 +118,7 @@ local LogOtherHoney = coroutine.wrap(function()
         wait(0.75)
         if plr.Name ~= lp.Name then
             repeat wait() until plr:FindFirstChild("CoreStats") repeat wait() until plr.CoreStats:FindFirstChild("Honey") repeat wait() until plr.CoreStats.Honey.Value ~= 0
-            SendRequest("description","**Honey Log (Other Players)\n"..GetTime().." LocalPlayer : ||"..lpname.."||\n "..plr.Name.." : "..comma_value(plr:WaitForChild("CoreStats"):WaitForChild("Honey").Value).."**")
+            SendRequest("description",("**Honey Log (Other Players)\n"..GetTime().." LocalPlayer : ||"..lpname.."||\n "..plr.Name.." : "..comma_value(plr:WaitForChild("CoreStats"):WaitForChild("Honey").Value).."**"))
         end
     end
 end)
@@ -111,14 +126,14 @@ end)
 game.Players.PlayerAdded:Connect(function(plr)
     if plr.Name ~= lp.Name then
         repeat wait() until plr:FindFirstChild("CoreStats") repeat wait() until plr.CoreStats:FindFirstChild("Honey") repeat wait() until plr.CoreStats.Honey.Value ~= 0
-        SendRequest("description","**Honey Log (Other Players)\n"..GetTime().." LocalPlayer : ||"..lpname.."||\n "..plr.Name.." : "..comma_value(plr:WaitForChild("CoreStats"):WaitForChild("Honey").Value).."**")
+        SendRequest("description",("**Honey Log (Other Players)\n"..GetTime().." LocalPlayer : ||"..lpname.."||\n "..plr.Name.." : "..comma_value(plr:WaitForChild("CoreStats"):WaitForChild("Honey").Value).."**"))
     end
 end)
 
 game.Players.PlayerRemoving:Connect(function(player)
 	if player.Name == game.Players.LocalPlayer.Name then
 		local timer = (os.time()-tonumber(Old_Time2))
-        SendRequest("description","**This is the End of Bee Swarm Simulator log**\n\n**"..GetTime().." ||"..lpname.."||**:\n\n "..("  **"..Old_Honey.." || "..Old_Time.."**\n\n  **"..Honey.Text.." || "..tostring(os.date("%m/%d %X")).."**\n\n  **"..comma_value(game.Players.LocalPlayer.CoreStats.Honey.Value-Old_Honey2).." || "..tostring(math.floor(timer/86400))..":"..tostring(math.floor(timer/3600)%24)..":"..tostring(math.floor(timer/60)%60)..":"..tostring(math.floor(timer%60)).."("..timer.."s)**\n\n    **"..(game.Players.LocalPlayer.CoreStats.Honey.Value-Old_Honey2)/timer.."/s**\n   **("..Integer_N_Comma((game.Players.LocalPlayer.CoreStats.Honey.Value-Old_Honey2)/timer)..")**"))
+        SendRequest("description",("**This is the End of Bee Swarm Simulator log**\n\n**"..GetTime().." ||"..lpname.."||**:\n\n "..("  **"..Old_Honey.." || "..Old_Time.."**\n\n  **"..Honey.Text.." || "..tostring(os.date("%m/%d %X")).."**\n\n  **"..comma_value(game.Players.LocalPlayer.CoreStats.Honey.Value-Old_Honey2).." || "..tostring(math.floor(timer/86400))..":"..tostring(math.floor(timer/3600)%24)..":"..tostring(math.floor(timer/60)%60)..":"..tostring(math.floor(timer%60)).."("..timer.."s)**\n\n    **"..(game.Players.LocalPlayer.CoreStats.Honey.Value-Old_Honey2)/timer.."/s**\n   **("..Integer_N_Comma((game.Players.LocalPlayer.CoreStats.Honey.Value-Old_Honey2)/timer)..")**")))
 	end
 end)
 
