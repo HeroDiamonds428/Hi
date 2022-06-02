@@ -143,7 +143,6 @@ local function TextBox(Text, Size)
 	NewTextBox.TextSize = Size or 12
 	NewTextBox.Size = UDim2.new(1,0,1,0)
 	NewTextBox.ZIndex = Level
-	NewTextBox.ClearTextOnFocus = false
 	return NewTextBox
 end
 
@@ -211,7 +210,7 @@ function UILibrary.Load(GUITitle)
 	MenuBar.BackgroundColor3 = Color3.fromRGB(20,20,20)
 	MenuBar.Size = UDim2.new(0,100,0,235)
 	MenuBar.Position = UDim2.new(0,5,0,30)
-	MenuBar.CanvasSize = UDim2.new(0,0,0,0)
+	MenuBar.CanvasSize = UDim2.new(0,0,1,0)
 	MenuBar.Parent = MainFrame
 	
 	DisplayFrame = RoundBox(5)
@@ -441,40 +440,45 @@ function UILibrary.Load(GUITitle)
 			return HiddenLabel
 		end
 		
-		function PageLibrary.AddTextBox(Default, Callback)
+		function PageLibrary.AddTextBox(Text, Default, Bool, Callback)
 			local TextBoxContainer = Frame()
-			TextBoxContainer.Name = Default.."LABEL"
+			TextBoxContainer.Name = Text.."TEXTBOX"
 			TextBoxContainer.Size = UDim2.new(1,0,0,20)
 			TextBoxContainer.BackgroundTransparency = 1
 			TextBoxContainer.Parent = DisplayPage
 			
-			local TextBoxForeground = RoundBox(5)
-			TextBoxForeground.Name = "TextBoxForeground"
-			TextBoxForeground.ImageColor3 = Color3.fromRGB(45,45,45)
-			TextBoxForeground.Size = UDim2.new(1,0,1,0)
-			TextBoxForeground.Parent = TextBoxContainer
+			local TextBoxLeftSide, TextBoxRightSide = RoundBox(5), RoundBox(5)
+			TextBoxLeftSide.Size = UDim2.new(1,-150,1,0)
+			TextBoxLeftSide.ImageColor3 = Color3.fromRGB(35,35,35)
+			TextBoxLeftSide.Parent = TextBoxContainer
 			
-			local HiddenTextbox = TextBox("", 12)
-			HiddenTextbox.Parent = TextBoxForeground
+			TextBoxRightSide.Size = UDim2.new(0,147,1,0)
+			TextBoxRightSide.Position = UDim2.new(0,178,0,0)
+			TextBoxRightSide.ImageColor3 = Color3.fromRGB(45,45,45)
+			TextBoxRightSide.Parent = TextBoxContainer
+            
 			
-			local TextLabel = TextLabel(Default, 10)
-			TextLabel.TextTransparency = 0.5
-			TextLabel.Parent = TextBoxForeground
-		    
-		    HiddenTextbox:GetPropertyChangedSignal("Text"):Connect(function()
-		        if HiddenTextbox.Text ~= "" then
-		            TextLabel.TextTransparency = 1
-		        else
-		            TextLabel.TextTransparency = 0.5
-		        end
-		    end)
+			local HiddenTextbox = TextBox(Default, 12)
+			HiddenTextbox.ClearTextOnFocus = Bool
+			HiddenTextbox.Parent = TextBoxRightSide
+			
+			local TextLabel = TextLabel(Text, 12)
+			TextLabel.Parent = TextBoxLeftSide
+			print(TextLabel.TextFits)
+			if not TextLabel.TextFits then
+			    TextLabel.TextScaled = true
+			end
+
 			HiddenTextbox.FocusLost:Connect(function(Enter)
+		        if HiddenTextbox.Text == "" then
+		            HiddenTextbox.Text = Default
+		        end
 			    if Enter then
 			        Callback(HiddenTextbox.Text)
-    				Tween(TextBoxForeground, {ImageColor3 = Color3.fromRGB(45,45,45)})
+			        Tween(TextBoxRightSide, {ImageColor3 = Color3.fromRGB(35,35,35)})
     				Tween(HiddenTextbox, {TextTransparency = 0.5})
     				wait(TweenTime)
-    				Tween(TextBoxForeground, {ImageColor3 = Color3.fromRGB(35,35,35)})
+    				Tween(TextBoxRightSide, {ImageColor3 = Color3.fromRGB(45,45,45)})
     				Tween(HiddenTextbox, {TextTransparency = 0})
 			    end
 			end)
