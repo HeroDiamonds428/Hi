@@ -765,7 +765,7 @@ function UILibrary.Load(GUITitle)
 			return ToggleContainer
 		end
 		
-		return PageLibrary
+		return PageLibrary, PageContainer, DisplayPage
 	end
 	
 	return TabLibrary, MenuBar, DisplayFrame, TitleBar
