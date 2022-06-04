@@ -1,4 +1,9 @@
---Original : https://v3rmillion.net/showthread.php?tid=1023761
+--[[
+Original Post/Docs: https://v3rmillion.net/showthread.php?tid=1023761
+Original Creator: https://v3rmillion.net/member.php?action=profile&uid=1078854 
+twink marie  /  Daisy McSlaysie#6459
+Original UiLibrary: https://pastebin.com/raw/V1ca2q9s
+]]
 
 local Player = game.Players.LocalPlayer
 local Mouse = Player:GetMouse()
@@ -440,7 +445,7 @@ function UILibrary.Load(GUITitle)
 			return HiddenLabel
 		end
 		
-		function PageLibrary.AddTextBox(Text, Default, Bool, Callback)
+		function PageLibrary.AddTextBox(Text, Default, Bool1, Bool2, Callback)
 			local TextBoxContainer = Frame()
 			TextBoxContainer.Name = Text.."TEXTBOX"
 			TextBoxContainer.Size = UDim2.new(1,0,0,20)
@@ -459,12 +464,11 @@ function UILibrary.Load(GUITitle)
             
 			
 			local HiddenTextbox = TextBox(Default, 12)
-			HiddenTextbox.ClearTextOnFocus = Bool
+			HiddenTextbox.ClearTextOnFocus = Bool1
 			HiddenTextbox.Parent = TextBoxRightSide
 			
 			local TextLabel = TextLabel(Text, 12)
 			TextLabel.Parent = TextBoxLeftSide
-			print(TextLabel.TextFits)
 			if not TextLabel.TextFits then
 			    TextLabel.TextScaled = true
 			end
@@ -473,14 +477,21 @@ function UILibrary.Load(GUITitle)
 		        if HiddenTextbox.Text == "" then
 		            HiddenTextbox.Text = Default
 		        end
-			    if Enter then
+			    if Bool2 and Enter then
 			        Callback(HiddenTextbox.Text)
 			        Tween(TextBoxRightSide, {ImageColor3 = Color3.fromRGB(35,35,35)})
     				Tween(HiddenTextbox, {TextTransparency = 0.5})
     				wait(TweenTime)
     				Tween(TextBoxRightSide, {ImageColor3 = Color3.fromRGB(45,45,45)})
     				Tween(HiddenTextbox, {TextTransparency = 0})
-			    end
+			    elseif not Bool2 then
+			        Callback(HiddenTextbox.Text)
+			        Tween(TextBoxRightSide, {ImageColor3 = Color3.fromRGB(35,35,35)})
+    				Tween(HiddenTextbox, {TextTransparency = 0.5})
+    				wait(TweenTime)
+    				Tween(TextBoxRightSide, {ImageColor3 = Color3.fromRGB(45,45,45)})
+    				Tween(HiddenTextbox, {TextTransparency = 0})
+    			end
 			end)
 			return HiddenTextbox
 		end
@@ -698,7 +709,7 @@ function UILibrary.Load(GUITitle)
 				end)
 			end)
 			
-			return SliderFill
+			return SliderForeground
 		end
 		
 		function PageLibrary.AddToggle(Text, Default, Callback)
@@ -757,7 +768,7 @@ function UILibrary.Load(GUITitle)
 		return PageLibrary
 	end
 	
-	return TabLibrary
+	return TabLibrary, MenuBar, DisplayFrame, TitleBar
 end
 
 return UILibrary
