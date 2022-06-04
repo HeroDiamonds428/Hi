@@ -474,24 +474,17 @@ function UILibrary.Load(GUITitle)
 			end
 
 			HiddenTextbox.FocusLost:Connect(function(Enter)
-		        if HiddenTextbox.Text == "" then
-		            HiddenTextbox.Text = Default
-		        end
-			    if Bool2 and Enter then
+			    if HiddenTextbox.Text == "" then
+				HiddenTextbox.Text = Default
+			    end
+			    if Bool2 and Enter or not Bool2 then
 			        Callback(HiddenTextbox.Text)
 			        Tween(TextBoxRightSide, {ImageColor3 = Color3.fromRGB(35,35,35)})
     				Tween(HiddenTextbox, {TextTransparency = 0.5})
     				wait(TweenTime)
     				Tween(TextBoxRightSide, {ImageColor3 = Color3.fromRGB(45,45,45)})
     				Tween(HiddenTextbox, {TextTransparency = 0})
-			    elseif not Bool2 then
-			        Callback(HiddenTextbox.Text)
-			        Tween(TextBoxRightSide, {ImageColor3 = Color3.fromRGB(35,35,35)})
-    				Tween(HiddenTextbox, {TextTransparency = 0.5})
-    				wait(TweenTime)
-    				Tween(TextBoxRightSide, {ImageColor3 = Color3.fromRGB(45,45,45)})
-    				Tween(HiddenTextbox, {TextTransparency = 0})
-    			end
+    			    end
 			end)
 			return HiddenTextbox
 		end
