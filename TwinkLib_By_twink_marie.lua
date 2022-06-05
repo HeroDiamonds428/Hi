@@ -308,7 +308,7 @@ function UILibrary.Load(GUITitle)
 			spawn(function()
 				for _, Button in next, MenuBar:GetChildren() do
 					if Button:IsA("GuiObject") then
-						local IsButton = string.find(Button.Name:lower(), PageContainer.Name:lower())
+						local IsButton = Button.Name:lower() == PageContainer.Name:lower()
 						local Button2 = Button:FindFirstChild(Button.Name.."Button")
 						Tween(Button, {ImageColor3 = IsButton and Color3.fromRGB(50,50,50) or Color3.fromRGB(40,40,40)})
 						Tween(Button2, {TextTransparency = IsButton and 0 or 0.5})
@@ -318,7 +318,7 @@ function UILibrary.Load(GUITitle)
 			spawn(function()
 				for _, Display in next, DisplayFrame:GetChildren() do
 					if Display:IsA("GuiObject") then
-						Display.Visible = string.find(Display.Name:lower(), PageContainer.Name:lower())
+						Display.Visible = Display.Name:lower() == PageContainer.Name:lower()
 					end
 				end
 			end)
@@ -474,9 +474,9 @@ function UILibrary.Load(GUITitle)
 			end
 
 			HiddenTextbox.FocusLost:Connect(function(Enter)
-			    if HiddenTextbox.Text == "" then
-				HiddenTextbox.Text = Default
-			    end
+		        if HiddenTextbox.Text == "" then
+		            HiddenTextbox.Text = Default
+		        end
 			    if Bool2 and Enter or not Bool2 then
 			        Callback(HiddenTextbox.Text)
 			        Tween(TextBoxRightSide, {ImageColor3 = Color3.fromRGB(35,35,35)})
@@ -484,7 +484,7 @@ function UILibrary.Load(GUITitle)
     				wait(TweenTime)
     				Tween(TextBoxRightSide, {ImageColor3 = Color3.fromRGB(45,45,45)})
     				Tween(HiddenTextbox, {TextTransparency = 0})
-    			    end
+    			end
 			end)
 			return HiddenTextbox
 		end
@@ -521,6 +521,8 @@ function UILibrary.Load(GUITitle)
 			
 			local DropdownList = Instance.new("UIListLayout")
 			DropdownList.Parent = DropdownFrame
+			
+			table.sort(DropdownArray)
 			
 			for OptionIndex, Option in next, DropdownArray do
 				PageLibrary.AddButton(Option, function()
