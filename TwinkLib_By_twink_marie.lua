@@ -387,7 +387,7 @@ function UILibrary.Load(GUITitle)
 		
 		local PageLibrary = {}
 		
-		function PageLibrary.AddButton(Text, Callback, Parent, Underline)
+		function PageLibrary.AddButton(Text, Callback, Parent, Underline, LayoutOrder)
 			local ButtonContainer = Frame()
 			ButtonContainer.Name = Text.."BUTTON"
 			ButtonContainer.Size = UDim2.new(1,0,0,20)
@@ -409,6 +409,10 @@ function UILibrary.Load(GUITitle)
 				BottomEffect.BackgroundColor3 = Color3.fromRGB(255,255,255)
 				BottomEffect.BackgroundTransparency = 0.5
 				BottomEffect.Parent = ButtonForeground
+			end
+			
+			if LayoutOrder then
+				ButtonContainer.LayoutOrder = LayoutOrder
 			end
 			
 			local HiddenButton = TextButton(Text, 12)
@@ -445,7 +449,7 @@ function UILibrary.Load(GUITitle)
 			return HiddenLabel
 		end
 		
-		function PageLibrary.AddTextBox(Text, Default, Bool1, Bool2, Callback)
+		function PageLibrary.AddTextBox(Text, Default, Callback, ClearTextOnFocus, Bool2)
 			local TextBoxContainer = Frame()
 			TextBoxContainer.Name = Text.."TEXTBOX"
 			TextBoxContainer.Size = UDim2.new(1,0,0,20)
@@ -462,9 +466,12 @@ function UILibrary.Load(GUITitle)
 			TextBoxRightSide.ImageColor3 = Color3.fromRGB(45,45,45)
 			TextBoxRightSide.Parent = TextBoxContainer
             
+			if ClearTextOnFocus == nil then
+				ClearTextOnFocus = false
+			end
 			
 			local HiddenTextbox = TextBox(Default, 12)
-			HiddenTextbox.ClearTextOnFocus = Bool1
+			HiddenTextbox.ClearTextOnFocus = ClearTextOnFocus
 			HiddenTextbox.Parent = TextBoxRightSide
 			
 			local TextLabel = TextLabel(Text, 12)
@@ -489,7 +496,7 @@ function UILibrary.Load(GUITitle)
 			return HiddenTextbox
 		end
 	
-		function PageLibrary.AddDropdown(Text, ConfigurationArray, Callback)
+		function PageLibrary.AddDropdown(Text, ConfigurationArray, Callback, LayoutOrder, LoopType)
 			local DropdownArray = ConfigurationArray or {}
 			
 			local DropdownToggle = false
@@ -522,13 +529,24 @@ function UILibrary.Load(GUITitle)
 			local DropdownList = Instance.new("UIListLayout")
 			DropdownList.Parent = DropdownFrame
 			
-			table.sort(DropdownArray)
-			
-			for OptionIndex, Option in next, DropdownArray do
-				PageLibrary.AddButton(Option, function()
-					Callback(Option)
-					DropdownLabel.Text = Text..": "..Option
-				end, DropdownFrame, OptionIndex < #DropdownArray)
+			if LayoutOrder then
+				DropdownList.SortOrder = LayoutOrder
+			end
+			if LoopType == 1 or LoopType == nil then
+				for OptionIndex, Option in pairs(DropdownArray) do
+					PageLibrary.AddButton(Option, function()
+						Callback(Option)
+						DropdownLabel.Text = Text..": "..Option
+					end, DropdownFrame, OptionIndex < #DropdownArray)
+				end
+			elseif LoopType == 2 then
+				for OptionIndex = 1, #DropdownArray do
+					local Option = DropdownArray[OptionIndex]
+					PageLibrary.AddButton(Option, function()
+						Callback(Option)
+						DropdownLabel.Text = Text..": "..Option
+					end, DropdownFrame, OptionIndex < #DropdownArray, OptionIndex)
+				end
 			end
 			
 			DropdownExpander.MouseButton1Down:Connect(function()
