@@ -141,7 +141,7 @@ end
 
 local function TextBox(Text, Size)
 	local NewTextBox = Instance.new("TextBox")
-	NewTextBox.Text = Text
+	NewTextBox.Text = tostring(Text)
 	NewTextBox.Font = MainFont
 	NewTextBox.TextColor3 = Color3.fromRGB(255,255,255)
 	NewTextBox.BackgroundTransparency = 1
@@ -389,6 +389,7 @@ function UILibrary.Load(GUITitle)
 		
 		function PageLibrary.AddButton(Text, Callback, Parent, Underline, LayoutOrder)
 			local ButtonContainer = Frame()
+			if Text == nil then return end
 			ButtonContainer.Name = Text.."BUTTON"
 			ButtonContainer.Size = UDim2.new(1,0,0,20)
 			ButtonContainer.BackgroundTransparency = 1
