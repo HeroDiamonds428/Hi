@@ -387,7 +387,7 @@ function UILibrary.Load(GUITitle)
 		
 		local PageLibrary = {}
 		
-		function PageLibrary.AddButton(Text, Callback, Parent, Underline, LayoutOrder)
+		function PageLibrary.AddButton(Text, Callback, Parent, Underline, LayoutOrder, TextScaled)
 			local ButtonContainer = Frame()
 			if Text == nil then return end
 			ButtonContainer.Name = Text.."BUTTON"
@@ -415,9 +415,13 @@ function UILibrary.Load(GUITitle)
 			if LayoutOrder then
 				ButtonContainer.LayoutOrder = LayoutOrder
 			end
-			
+				
 			local HiddenButton = TextButton(Text, 12)
 			HiddenButton.Parent = ButtonForeground
+			
+			if TextScaled then
+				HiddenButton.TextScaled = true
+			end
 			
 			HiddenButton.MouseButton1Down:Connect(function()
 				Callback()
@@ -450,7 +454,7 @@ function UILibrary.Load(GUITitle)
 			return HiddenLabel
 		end
 		
-		function PageLibrary.AddTextBox(Text, Default, Callback, ClearTextOnFocus, Bool2)
+		function PageLibrary.AddTextBox(Text, Default, Callback, ClearTextOnFocus, RequiredEnter)
 			local TextBoxContainer = Frame()
 			TextBoxContainer.Name = Text.."TEXTBOX"
 			TextBoxContainer.Size = UDim2.new(1,0,0,20)
@@ -467,12 +471,8 @@ function UILibrary.Load(GUITitle)
 			TextBoxRightSide.ImageColor3 = Color3.fromRGB(45,45,45)
 			TextBoxRightSide.Parent = TextBoxContainer
             
-			if ClearTextOnFocus == nil then
-				ClearTextOnFocus = false
-			end
-			
 			local HiddenTextbox = TextBox(Default, 12)
-			HiddenTextbox.ClearTextOnFocus = ClearTextOnFocus
+			HiddenTextbox.ClearTextOnFocus = ClearTextOnFocus or false
 			HiddenTextbox.Parent = TextBoxRightSide
 			
 			local TextLabel = TextLabel(Text, 12)
@@ -485,7 +485,7 @@ function UILibrary.Load(GUITitle)
 		        if HiddenTextbox.Text == "" then
 		            HiddenTextbox.Text = Default
 		        end
-			    if Bool2 and Enter or not Bool2 then
+			    if RequiredEnter and Enter or not RequiredEnter then
 			        Callback(HiddenTextbox.Text)
 			        Tween(TextBoxRightSide, {ImageColor3 = Color3.fromRGB(35,35,35)})
     				Tween(HiddenTextbox, {TextTransparency = 0.5})
