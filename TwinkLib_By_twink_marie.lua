@@ -169,6 +169,20 @@ local function Tween(GuiObject, Dictionary)
 	return TweenBase
 end
 
+local function tablelength(T, Type) -- https://stackoverflow.com/questions/2705793/how-to-get-number-of-entries-in-a-lua-table
+	local count, maxindex = 0, 0
+	if Type == 2 then
+		for i,_ in pairs(T) do 
+			count = count + 1 
+			if i > maxindex then
+				maxindex = i
+			end
+		end
+	else
+		for _ in pairs(T) do count = count + 1 end
+	end
+	return count, maxindex
+end
 local UILibrary = {}
 
 function UILibrary.Load(GUITitle)
@@ -454,7 +468,10 @@ function UILibrary.Load(GUITitle)
 			return HiddenLabel
 		end
 		
-		function PageLibrary.AddTextBox(Text, Default, Callback, ClearTextOnFocus, RequiredEnter)
+		function PageLibrary.AddTextBox(Text, Default, Callback, ClearTextOnFocus, RequiredEnter, OffSet)
+			if OffSet == nil then
+				OffSet = 0
+			end
 			local TextBoxContainer = Frame()
 			TextBoxContainer.Name = Text.."TEXTBOX"
 			TextBoxContainer.Size = UDim2.new(1,0,0,20)
@@ -462,12 +479,12 @@ function UILibrary.Load(GUITitle)
 			TextBoxContainer.Parent = DisplayPage
 			
 			local TextBoxLeftSide, TextBoxRightSide = RoundBox(5), RoundBox(5)
-			TextBoxLeftSide.Size = UDim2.new(1,-150,1,0)
+			TextBoxLeftSide.Size = UDim2.new(1,-150+OffSet,1,0)
 			TextBoxLeftSide.ImageColor3 = Color3.fromRGB(35,35,35)
 			TextBoxLeftSide.Parent = TextBoxContainer
 			
-			TextBoxRightSide.Size = UDim2.new(0,147,1,0)
-			TextBoxRightSide.Position = UDim2.new(0,178,0,0)
+			TextBoxRightSide.Size = UDim2.new(0,147-OffSet,1,0)
+			TextBoxRightSide.Position = UDim2.new(0,178+OffSet,0,0)
 			TextBoxRightSide.ImageColor3 = Color3.fromRGB(45,45,45)
 			TextBoxRightSide.Parent = TextBoxContainer
             
@@ -502,6 +519,8 @@ function UILibrary.Load(GUITitle)
 			
 			local DropdownToggle = false
 			
+			local DropdownArrayLength, MaxIndex = tablelength(DropdownArray, LoopType)
+			
 			local DropdownContainer = Frame()
 			DropdownContainer.Size = UDim2.new(1,0,0,20)
 			DropdownContainer.Name = Text.."DROPDOWN"
@@ -524,7 +543,7 @@ function UILibrary.Load(GUITitle)
 			local DropdownFrame = Frame()
 			DropdownFrame.Position = UDim2.new(0,0,0,20)
 			DropdownFrame.BackgroundTransparency = 1
-			DropdownFrame.Size = UDim2.new(1,0,0,#DropdownArray*20)
+			DropdownFrame.Size = UDim2.new(1,0,0,DropdownArrayLength*20)
 			DropdownFrame.Parent = DropdownForeground
 			
 			local DropdownList = Instance.new("UIListLayout")
@@ -538,21 +557,27 @@ function UILibrary.Load(GUITitle)
 					PageLibrary.AddButton(Option, function()
 						Callback(Option)
 						DropdownLabel.Text = Text..": "..Option
-					end, DropdownFrame, OptionIndex < #DropdownArray)
+					end, DropdownFrame, OptionIndex < DropdownArrayLength)
 				end
 			elseif LoopType == 2 then
-				for OptionIndex = 1, #DropdownArray do
+				local TotalButtonAdded = 0
+				if MaxIndex < DropdownArrayLength then
+					MaxIndex = DropdownArrayLength
+				end
+				for OptionIndex = 1, MaxIndex do
 					local Option = DropdownArray[OptionIndex]
-					PageLibrary.AddButton(Option, function()
-						Callback(Option)
-						DropdownLabel.Text = Text..": "..Option
-					end, DropdownFrame, OptionIndex < #DropdownArray, OptionIndex)
+					if Option ~= nil then
+						PageLibrary.AddButton(Option, function()
+							Callback(Option)
+							DropdownLabel.Text = Text..": "..Option
+						end, DropdownFrame, OptionIndex < DropdownArrayLength, OptionIndex)
+					end
 				end
 			end
 			
 			DropdownExpander.MouseButton1Down:Connect(function()
 				DropdownToggle = not DropdownToggle
-				Tween(DropdownContainer, {Size = DropdownToggle and UDim2.new(1,0,0,20+(#DropdownArray*20)) or UDim2.new(1,0,0,20)})
+				Tween(DropdownContainer, {Size = DropdownToggle and UDim2.new(1,0,0,20+(DropdownArrayLength*20)) or UDim2.new(1,0,0,20)})
 				Tween(DropdownExpander, {Rotation = DropdownToggle and 135 or 0})
 			end)
 			
