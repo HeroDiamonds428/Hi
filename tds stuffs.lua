@@ -120,9 +120,6 @@ if game.PlaceId == 5591597781 then
         rawset(tempt, Equipped[i].."Data", {eX = 0, eY = -8, eZ = 0, StackAmount = 1, stackspeed = 200, Xr = 0, Yr = 0, Zr = 0})
         --print(serializeTable(tempt))
         SetValue(tempt, {})
-        if Inventory[Equipped[i]]["GoldenPerks"] then
-            Golden[#Golden+1] = Equipped[i]
-        end
     end
     local TowerStackData = {eX, eY, eZ, StackAmount, stackspeed, Xr, Yr, Zr}
     local function GetTowerInfos()
