@@ -7,9 +7,7 @@ end
 if game.PlaceId == 5591597781 then
     local function SetValue(v1,v2)
         for i,v in pairs(v1) do
-            if Core[i] == nil then
-                Core[i] = v
-            end
+	    Core[i] = v
         end
         for i,v in pairs(v2) do
             Core[i] = v
