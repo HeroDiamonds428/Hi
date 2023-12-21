@@ -1,10 +1,10 @@
 if Tower_Defense_Simulator_Script_Game == nil or typeof(Tower_Defense_Simulator_Script_Game) ~= "table" then
 	getgenv()["Tower_Defense_Simulator_Script_Game"] = {}
 end
-local Core, wait, spawn = Tower_Defense_Simulator_Script_Game, task.wait, task.spawn
 if not game:IsLoaded() then
     game.Loaded:Wait()
 end
+local Core, wait, spawn = Tower_Defense_Simulator_Script_Game, task.wait, task.spawn
 if game.PlaceId == 5591597781 then
     local function SetValue(v1,v2)
         for i,v in pairs(v1) do
@@ -23,6 +23,7 @@ if game.PlaceId == 5591597781 then
     },{["AbilityDelayTextBoxes"] = {}})
     Core.ExecuteTime = Core.ExecuteTime + 1
     local UILibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/HeroDiamonds428/Hi/main/TwinkLib_By_twink_marie.lua", true))()
+	--loadstring(game:HttpGet("https://raw.githubusercontent.com/HeroDiamonds428/Hi/main/tds%20stuffs.lua", true))()
     local RS, WS, PS, CG = game:GetService("ReplicatedStorage"), game:GetService("Workspace"), game:GetService("Players"), game:GetService("CoreGui")
     local rf = RS:WaitForChild("RemoteFunction")
     local MainUI = UILibrary.Load("TDS Game")
@@ -101,7 +102,8 @@ if game.PlaceId == 5591597781 then
         RayResultWhiteList2[#RayResultWhiteList2+1] = v
     end
     local function GetEquipped()
-        if getgc and getupvalues then
+		return {"Scout", "Sniper"}, {"Scout", "Sniper"}
+        --[[if getgc and getupvalues then
             for i,v in next, getgc(true) do
                 if typeof(v) == "table" and rawget(v,"Managers") and typeof(v.Managers) == "table" and rawget(v["Managers"],"Equipped.Troops") and rawget(v["Managers"],"Inventory.Troops") then
                     return getupvalues(v["Managers"]["Equipped.Troops"]["Get"])[2], getupvalues(v["Managers"]["Inventory.Troops"]["Get"])[2]
@@ -109,7 +111,7 @@ if game.PlaceId == 5591597781 then
             end
         else
             return rf:InvokeServer("Session","Search","Equipped.Troops"), rf:InvokeServer("Session","Search","Inventory.Troops")
-        end
+        end]]
     end
     local Equipped, Inventory = GetEquipped()
     for i=1, #Equipped do
