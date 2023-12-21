@@ -1,13 +1,16 @@
 if Tower_Defense_Simulator_Script_Game == nil or typeof(Tower_Defense_Simulator_Script_Game) ~= "table" then
 	getgenv()["Tower_Defense_Simulator_Script_Game"] = {}
 end
+local Core, wait, spawn = Tower_Defense_Simulator_Script_Game, task.wait, task.spawn
 if not game:IsLoaded() then
     game.Loaded:Wait()
 end
 if game.PlaceId == 5591597781 then
     local function SetValue(v1,v2)
         for i,v in pairs(v1) do
-	    Core[i] = v
+            if Core[i] == nil then
+                Core[i] = v
+            end
         end
         for i,v in pairs(v2) do
             Core[i] = v
